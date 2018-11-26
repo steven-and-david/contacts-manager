@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static java.awt.SystemColor.info;
 
 public class ContactManager {
 
@@ -41,9 +38,24 @@ public class ContactManager {
         System.out.println("2. Add a contact");
         System.out.println("3. Delete a contact");
         System.out.println("4. Search for a contact");
-
     }
 
+    public static String formatNum(String pNum) {
+        if (pNum.indexOf("-") == 3 && pNum.lastIndexOf("-") == 7 && pNum.length() == 12) {
+            return pNum;
+        } else if (pNum.indexOf("-") == 3 && pNum.length() == 8) {
+            return pNum;
+        } else if (pNum.length() == 10) {
+            String firstThree = pNum.substring(0,3);
+            String midThree = pNum.substring(3,6);
+            String lastFour = pNum.substring(6,10);
+            return firstThree + "-" + midThree + "-" + lastFour;
+        } else {
+            String firstThree = pNum.substring(0,3);
+            String lastFour = pNum.substring(3,7);
+            return firstThree + "-" + lastFour;
+        }
+    }
 
     public static void removeContact() {
         System.out.println("Please enter the name of the contact you would like to remove");
@@ -66,24 +78,62 @@ public class ContactManager {
         }
     }
 
+    public static String getPNum (){
+        String cPhoneNumber;
+        while (true) {
+            System.out.println("Please enter phone number:");
+            cPhoneNumber = sc.getString();
+            try {
+                return formatNum(cPhoneNumber);
+            } catch (Exception e) {
+                System.out.println("That's no good...");
+            }
+        }
+    }
+
     public static void userAddsContact() {
+        int hashSize = contactList.size();
         System.out.println("Please enter name:");
         String cName = sc.getString();
-        System.out.println("Please enter phone number:");
-        String cPhoneNumber = sc.getString();
+        String cPhoneNumber = getPNum();
         Contact addMe = new Contact(cName, cPhoneNumber);
         addContact(addMe);
+        if (hashSize == contactList.size()) {
+            System.out.println("Contact already exists in contact list.");
+        } else {
+            System.out.println("Contact added!");
+        }
+    }
+
+    public static int longestName() {
+        int length = 0;
+        for (String name : contactList.keySet()) {
+            if (name.length() > length) {
+                length = name.length();
+            }
+        }
+        return length;
     }
 
     public static HashMap addContact(Contact contact) {
-        contactList.put(contact.getName(), contact.getPhoneNum());
+        contactList.putIfAbsent(contact.getName(), contact.getPhoneNum());
         return contactList;
     }
 
     public static void showAll() {
         for (String name : contactList.keySet()) {
             String pNum = contactList.get(name);
-            System.out.println(name + " | " + pNum);
+            String returnName = name;
+            int startAt = longestName() - name.length();
+            System.out.println(startAt);
+            if (name.length() == longestName()) {
+                System.out.println(name + " | " + pNum);
+            } else {
+                for (int i = startAt; i <= longestName() - 1; i++){
+                    returnName += " ";
+                }
+                System.out.println(returnName + " | " + pNum);
+            }
         }
     }
 
@@ -105,13 +155,14 @@ public class ContactManager {
     public static void main(String[] args) {
         int userInput;
         buildOutContacts();
+        System.out.println(longestName());
 
 
         do {
             userMenu();
             userInput = sc.getIntegerSecret(0 , 5);
             switch (userInput) {
-                case (1) :
+                case 1 :
                     showAll();
                     break;
                 case 2 :
@@ -126,7 +177,217 @@ public class ContactManager {
                     sc.clear();
                     searchContact();
                     break;
+                case 5 :
+                    youGotTheMonster();
+                    break;
+                default:
+                    sc.clear();
+                    System.out.println("Are you sure you'd like to quit?");
+                    boolean answer = sc.yesNo();
+                    if (!answer) {
+                        userInput = 1;
+                        break;
+                    } else {
+                        break;
+                    }
             }
         } while (userInput != 0);
+        writeToTXT();
+        System.out.println("Have fun on your phone!");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static void youGotTheMonster() {
+        System.out.println("@                                                                                              \n" +
+                "                                                     *****    %***                             \n" +
+                "                                                     (****    ******                           \n" +
+                "                                                      ***    ******                            \n" +
+                "                                                      ***    *****                             \n" +
+                "                                                      ***   *****    ***                       \n" +
+                "            ***                                       **(   ****   ******                      \n" +
+                "   ******# ****                                       **   ***   *****                         \n" +
+                "    ***********                                            **  ****                            \n" +
+                "****************                                 (((          **                               \n" +
+                "   **************                           (((((((((((                                        \n" +
+                "  ****************                           (((((((((((                                       \n" +
+                "    ****************                      #*((((((                                             \n" +
+                "      ***************                #//**...*********/    ((((((((                            \n" +
+                "       **************/             ///...****************&    (((((((                          \n" +
+                "       *************////         ///.,(((/****((((((********   ((((                            \n" +
+                "        ************/////      /////**(***/(,...   ..(*******    ((                            \n" +
+                "        ***/*******///////#   /////((***/(...        .(********                       ***      \n" +
+                "         **//******///////// ////(((***/(...   /      (...,*****                    %*****     \n" +
+                "          ////****//////////////((((***/(....(/%/.  ..(    ./****                /********     \n" +
+                "          /////***////////////(((/(****/(,..........,((    ./****            ///*****/*******  \n" +
+                "           /////*////////////(((..,(****//(,,,...,((**#.....(*****        /////****************\n" +
+                "           //////////////////((((.((*****//////////***(....//**((*     ///////************** **\n" +
+                "            ////////////////(((((,.((******************/////******  /////////******************\n" +
+                "             ///////////////(((((...((**/**********************/**//////////*******/******  ***\n" +
+                "             */////////////((((((...(((***************/***/****(**/////////******/***   ***    \n" +
+                "              //////////////.,(((((((..((*********************(***////////*****//***           \n" +
+                "               ////////////(.((((((((....((******************(****///////****///**/            \n" +
+                "                ////////////(...((((((((((.,(((***********((******//////**////***              \n" +
+                "                *///////////(..(((((((((((.....,((((((((/.(*****/////////////***               \n" +
+                "                 ////////////((...((((((((....(.....((...(*/////////////////**                 \n" +
+                "                  ////////////(...*/////((((((((...((((((//////////////////*                   \n" +
+                "                   /////////////(..../////////..//(((((((/////////////////                     \n" +
+                "                  (///////////////(./....////////,//((,.((//////////////                       \n" +
+                "                  //////////////////((..//.....//...((...(////////////                         \n" +
+                "                 ///////////////////////((.....//....((/////////////                           \n" +
+                "                 ////////////////////////////////////////////////                              \n" +
+                "                ///////////////////////////,,,,,,,/////////////                                \n" +
+                "               //////////////////////////(//////////((////////(                                \n" +
+                "              ///////////////////////////////(((//////////////                                 \n" +
+                "             /////////////////////////////////////////////////                                 \n" +
+                "            #////////////////////////////////////////((//////                                  \n" +
+                "           %////////////////////////////////////////((///////                                  \n" +
+                "           /////////////////////////////////////////////////                                   \n" +
+                "         #/////////////////////////////////////////(((//////                                   \n" +
+                "        /////////////////////////////////////////((((//////                                    \n" +
+                "       //////////////////////////////////////((/(((////////                                    \n" +
+                "      /////////////////////////////////////(((////////////                                     \n" +
+                "     ////////////////////////////////////////////////////(                                     \n" +
+                "   //////////////////////////////////////////////////////                                      \n" +
+                "\n SECRET OPTION");
     }
 }
