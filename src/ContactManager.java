@@ -32,6 +32,40 @@ public class ContactManager {
         }
     }
 
+    public static void userMenu() {
+        System.out.println("\nContacts Manager");
+
+        System.out.println("\n\nWhat would you like to do?");
+        System.out.println("0. Exit");
+        System.out.println("1. Show all contacts");
+        System.out.println("2. Add a contact");
+        System.out.println("3. Delete a contact");
+        System.out.println("4. Search for a contact");
+
+    }
+
+
+    public static void removeContact() {
+        System.out.println("Please enter the name of the contact you would like to remove");
+        String cName = sc.getString();
+        if (contactList.containsKey(cName)) {
+            contactList.remove(cName);
+            System.out.println("Contact has successfully been removed!");
+        } else {
+            System.out.println("Contact is not in list");
+        }
+    }
+
+    public static void searchContact() {
+        System.out.println("Please enter the name of the contact you would like to search");
+        String cName = sc.getString();
+        if (contactList.containsKey(cName)) {
+            System.out.println(cName + " | " + contactList.get(cName));
+        } else {
+            System.out.println("Contact is not in list");
+        }
+    }
+
     public static void userAddsContact() {
         System.out.println("Please enter name:");
         String cName = sc.getString();
@@ -62,16 +96,37 @@ public class ContactManager {
         }
 
         try {
-            Files.write(p, addMe, StandardOpenOption.APPEND);
+            Files.write(p, addMe);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
+        int userInput;
         buildOutContacts();
-        userAddsContact();
-        showAll();
-        writeToTXT();
+
+
+        do {
+            userMenu();
+            userInput = sc.getIntegerSecret(0 , 5);
+            switch (userInput) {
+                case (1) :
+                    showAll();
+                    break;
+                case 2 :
+                    sc.clear();
+                    userAddsContact();
+                    break;
+                case 3 :
+                    sc.clear();
+                    removeContact();
+                    break;
+                case 4 :
+                    sc.clear();
+                    searchContact();
+                    break;
+            }
+        } while (userInput != 0);
     }
 }
