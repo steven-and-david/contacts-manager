@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -124,25 +125,26 @@ public class ContactManager {
         return length;
     }
 
-    public static HashMap addContact(Contact contact) {
+    private static HashMap addContact(Contact contact) {
         contactList.putIfAbsent(contact.getName(), contact.getPhoneNum());
         return contactList;
     }
 
-    public static HashMap editContact(Contact contact) {
+    private static HashMap editContact(Contact contact) {
         contactList.replace(contact.getName(), contact.getPhoneNum());
         return contactList;
     }
 
     public static void showAll() {
         String header = "| Name";
-        String line = "------";
+        String line = "===~~~";
         for (int i = longestName() - 4; i > 0; i--){
             header += " ";
             line += "-";
         }
         header += " | Phone Number |";
-        line += "-----------------";
+        line += "-----------~~~===";
+        System.out.println(line);
         System.out.println(header);
         System.out.println(line);
         for (String name : contactList.keySet()) {
@@ -165,6 +167,7 @@ public class ContactManager {
                 }
             }
         }
+        System.out.println(line);
     }
 
     public static void userEditsContact() {
@@ -205,8 +208,6 @@ public class ContactManager {
     public static void main(String[] args) {
         int userInput;
         buildOutContacts();
-        System.out.println(longestName());
-
 
         do {
             userMenu();
