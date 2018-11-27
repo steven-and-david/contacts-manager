@@ -52,10 +52,12 @@ public class ContactManager {
             String midThree = pNum.substring(3,6);
             String lastFour = pNum.substring(6,10);
             return firstThree + "-" + midThree + "-" + lastFour;
-        } else {
+        } else if (pNum.length() == 7) {
             String firstThree = pNum.substring(0,3);
             String lastFour = pNum.substring(3,7);
             return firstThree + "-" + lastFour;
+        } else {
+            return "notgood";
         }
     }
 
@@ -95,23 +97,32 @@ public class ContactManager {
 
     public static void userAddsContact() {
         int hashSize = contactList.size();
-        System.out.println("Please enter name:");
-        String cName = sc.getString();
-        String cPhoneNumber = getPNum();
-        Contact addMe = new Contact(cName, cPhoneNumber);
-        addContact(addMe);
-        if (hashSize == contactList.size()) {
-            System.out.println("Contact already exists in contact list. Would you like to edit this" +
-                    " contact?");
-            boolean answer = sc.yesNo();
-            if (answer) {
-                editContact(addMe);
-                System.out.println("Contact information successfully changed");
+        boolean running = true;
+        while (running) {
+            System.out.println("Please enter name:");
+            String cName = sc.getString();
+            String cPhoneNumber = getPNum();
+            if (!cPhoneNumber.equalsIgnoreCase("notgood")) {
+                Contact addMe = new Contact(cName, cPhoneNumber);
+                addContact(addMe);
+                if (hashSize == contactList.size()) {
+                    System.out.println("Contact already exists in contact list. Would you like to edit this" +
+                            " contact?");
+                    boolean answer = sc.yesNo();
+                    if (answer) {
+                        editContact(addMe);
+                        running = false;
+                        System.out.println("Contact information successfully changed");
+                    } else {
+                        System.out.println("Returning to main menu...");
+                    }
+                } else {
+                    running = false;
+                    System.out.println("Contact added!");
+                }
             } else {
-                System.out.println("Returning to main menu...");
+                System.out.println("Phone Number is invalid... Try again.");
             }
-        } else {
-            System.out.println("Contact added!");
         }
     }
 
@@ -171,22 +182,30 @@ public class ContactManager {
     }
 
     public static void userEditsContact() {
-        System.out.println("Please enter the name to edit contact:");
-        String cName = sc.getString();
-        String cPhoneNumber = getPNum();
-        Contact addMe = new Contact(cName, cPhoneNumber);
-        if (contactList.containsKey(cName)) {
-            System.out.println("Are you sure you want to edit the contact? Previous contact information" +
-                    " will be lost.");
-            boolean answer = sc.yesNo();
-            if (answer) {
-                editContact(addMe);
-                System.out.println("Contact information successfully changed");
+        boolean running = true;
+        while (running) {
+            System.out.println("Please enter the name to edit contact:");
+            String cName = sc.getString();
+            String cPhoneNumber = getPNum();
+            if (!cPhoneNumber.equalsIgnoreCase("notgood")) {
+                Contact addMe = new Contact(cName, cPhoneNumber);
+                if (contactList.containsKey(cName)) {
+                    System.out.println("Are you sure you want to edit the contact? Previous contact information" +
+                            " will be lost.");
+                    boolean answer = sc.yesNo();
+                    if (answer) {
+                        editContact(addMe);
+                        running = false;
+                        System.out.println("Contact information successfully changed");
+                    } else {
+                        System.out.println("Contact information unchanged");
+                    }
+                } else {
+                    System.out.println("Contact does not exist in list. Returning to main menu...");
+                }
             } else {
-                System.out.println("Contact information unchanged");
+                System.out.println("Phone Number is invalid... Try again.");
             }
-        } else {
-            System.out.println("Contact does not exist in list. Returning to main menu...");
         }
     }
 
