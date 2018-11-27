@@ -38,6 +38,7 @@ public class ContactManager {
         System.out.println("2. Add a contact");
         System.out.println("3. Delete a contact");
         System.out.println("4. Search for a contact");
+        System.out.println("5. Edit a contact");
     }
 
     public static String formatNum(String pNum) {
@@ -99,7 +100,15 @@ public class ContactManager {
         Contact addMe = new Contact(cName, cPhoneNumber);
         addContact(addMe);
         if (hashSize == contactList.size()) {
-            System.out.println("Contact already exists in contact list.");
+            System.out.println("Contact already exists in contact list. Would you like to edit this" +
+                    " contact?");
+            boolean answer = sc.yesNo();
+            if (answer) {
+                editContact(addMe);
+                System.out.println("Contact information successfully changed");
+            } else {
+                System.out.println("Returning to main menu...");
+            }
         } else {
             System.out.println("Contact added!");
         }
@@ -120,20 +129,61 @@ public class ContactManager {
         return contactList;
     }
 
+    public static HashMap editContact(Contact contact) {
+        contactList.replace(contact.getName(), contact.getPhoneNum());
+        return contactList;
+    }
+
     public static void showAll() {
+        String header = "| Name";
+        String line = "------";
+        for (int i = longestName() - 4; i > 0; i--){
+            header += " ";
+            line += "-";
+        }
+        header += " | Phone Number |";
+        line += "-----------------";
+        System.out.println(header);
+        System.out.println(line);
         for (String name : contactList.keySet()) {
             String pNum = contactList.get(name);
-            String returnName = name;
+            String returnName = "| " + name;
             int startAt = longestName() - name.length();
-            System.out.println(startAt);
             if (name.length() == longestName()) {
-                System.out.println(name + " | " + pNum);
-            } else {
-                for (int i = startAt; i <= longestName() - 1; i++){
-                    returnName += " ";
+                if(pNum.length() == 12) {
+                    System.out.println("| " + name + " | " + pNum + " |");
+                } else {
+                    System.out.println("| " + name + " | " + pNum + "     |");
                 }
-                System.out.println(returnName + " | " + pNum);
+            } else {
+                for (int i = startAt; i > 0; i--){
+                    returnName += " ";
+                } if(pNum.length() == 12) {
+                    System.out.println(returnName + " | " + pNum + " |");
+                } else {
+                    System.out.println(returnName + " | " + pNum + "     |");
+                }
             }
+        }
+    }
+
+    public static void userEditsContact() {
+        System.out.println("Please enter the name to edit contact:");
+        String cName = sc.getString();
+        String cPhoneNumber = getPNum();
+        Contact addMe = new Contact(cName, cPhoneNumber);
+        if (contactList.containsKey(cName)) {
+            System.out.println("Are you sure you want to edit the contact? Previous contact information" +
+                    " will be lost.");
+            boolean answer = sc.yesNo();
+            if (answer) {
+                editContact(addMe);
+                System.out.println("Contact information successfully changed");
+            } else {
+                System.out.println("Contact information unchanged");
+            }
+        } else {
+            System.out.println("Contact does not exist in list. Returning to main menu...");
         }
     }
 
@@ -160,7 +210,7 @@ public class ContactManager {
 
         do {
             userMenu();
-            userInput = sc.getIntegerSecret(0 , 5);
+            userInput = sc.getIntegerSecret(0 , 6);
             switch (userInput) {
                 case 1 :
                     showAll();
@@ -177,7 +227,11 @@ public class ContactManager {
                     sc.clear();
                     searchContact();
                     break;
-                case 5 :
+                case 5:
+                    sc.clear();
+                    userEditsContact();
+                    break;
+                case 6 :
                     youGotTheMonster();
                     break;
                 default:
