@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ContactManager {
 
@@ -157,7 +155,8 @@ public class ContactManager {
         System.out.println(line);
         System.out.println(header);
         System.out.println(line);
-        for (String name : contactList.keySet()) {
+        Set<String> names = new TreeSet<>(contactList.keySet());
+        for (String name : names) {
             String pNum = contactList.get(name);
             String returnName = "| " + name;
             int startAt = longestName() - name.length();
@@ -210,8 +209,8 @@ public class ContactManager {
 
     public static void writeToTXT() {
         List<String> addMe = new ArrayList<>();
-
-        for (String name : contactList.keySet()) {
+        Set<String> names = new TreeSet<>(contactList.keySet());
+        for (String name : names) {
             String pNum = contactList.get(name);
             addMe.add(name + " | " + pNum);
         }
