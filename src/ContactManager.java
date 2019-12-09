@@ -10,7 +10,7 @@ public class ContactManager {
 
     public static HashMap<String, String> contactList = new HashMap<>();
     public static Input sc = new Input();
-    public static Path p = Paths.get("./src/contacts.txt").normalize();
+    public static Path p = Paths.get("./data/contacts.txt").normalize();
 
     public static void buildOutContacts() {
 
